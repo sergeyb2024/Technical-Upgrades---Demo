@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Technical Upgrades App for F1 Fans</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            content: [
+                "./*.html",
+                "./*.js",
+                "./*.ejs",
+                "./pages/**/*.ejs",
+                "./pages/index.ejs"
+            ],
+            theme: { 
+                screens: {
+                    sm: '480px',
+                    md: '768px',
+                    lg: '976px',
+                    xl: '1440px',
+                },
+                colors: {
+                    'blue': '#1fb6ff',
+                    'purple': '#7e5bef',
+                    'pink': '#ff49db',
+                    'orange': '#ff7849',
+                    'green': '#13ce66',
+                    'yellow': '#ffc82c',
+                    'gray-dark': '#273444',
+                    'gray': '#8492a6',
+                    'gray-light': '#d3dce6',
+                },
+                extend: {
+                    backgroundImage: theme => ({
+                        "image_2" : "url('../stock-images/image_2.png')"
+                    }),
+                    spacing: {
+                        '128': '32rem',
+                        '144': '36rem',
+                    },
+                    borderRadius: {
+                        '4xl': '2rem',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap" rel="stylesheet">
+    
+</head>
+<header>
+    <%- include('../partials/header'); %>
+</header>
+<body class="bg-gray-light bg-opacity-0 ">
+    <div class="container mx-auto px-4 py-8 bg-cover" style="background-image: url("/stock-images/image_2.png"); height: 400px">
+        <section class="mt-8">
+            <div class="flex flex-col items-center">
+                <form class="w-full max-w-sm" action="/" method="post">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <div class="flex flex-col space-y-4">
+                        <select id="constructor" name="constructor"
+                            class="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue focus:border-blue sm:text-sm">
+                            <option selected="true">Select Constructor
+                            </option>
+                            <% constructor.map(item=> { %>
+                                <option type="text" value="<%= item.Constructor %>">
+                                    <%= item.Constructor %>
+                                </option>
+                                <% }) %>
+                        </select>
+                        <select id="race" name="race"
+                            class="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue focus:border-blue sm:text-sm">
+                            <option selected="false">Select Race</option>
+                            <% raceName.map(item=> { %>
+                                <option type="text" value="<%= item.RaceName %>">
+                                    <%= item.RaceName %>
+                                </option>
+                                <% }) %>
+                        </select>
+                        <button type="submit"
+                            class="w-full bg-blue text-blue py-2 px-4 rounded-md hover:bg-blue-dark focus:outline-none focus:ring-2 focus:ring-blue focus:ring-opacity-50">
+                            Request information
+                            <svg class="inline w-4 h-4 ml-2 rtl:rotate-180" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section class="mt-8">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h1 class="text-2xl font-bold text-gray-dark mb-4">
+                    <%= constructorTitle %>
+                </h1>
+                <h2 class="text-xl font-medium text-gray mb-4">
+                    <%= raceTitle %>
+                </h2>
+                <p class="text-gray">
+                    <%= textOutput %>
+                </p>
+            </div>
+        </section>
+        <footer class="mt-8">
+            <%- include('../partials/footer'); %>
+        </footer>
+    </div>
+</body>
+
+</html>

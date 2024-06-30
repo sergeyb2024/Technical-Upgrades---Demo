@@ -1,0 +1,32 @@
+{
+  "name": "tech-upgrades-build",
+  "version": "1.0.0",
+  "description": "Technical Upgrades App for F1",
+  "tailwind:css": "postcss ./public/styles/output.css -o ./public/styles/style.css",
+  "main": "./api/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./api/index.js",
+    "lint": "eslint --fix api"
+  },
+  "author": "SergeyB",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-router": "^0.0.1",
+    "express-session": "^1.18.0",
+    "express-validator": "^7.1.0",
+    "helmet": "^7.1.0",
+    "dotenv": "^16.4.5",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb-typescript": "^18.0.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.1"
+  }
+}
