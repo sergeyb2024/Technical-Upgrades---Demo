@@ -15,7 +15,7 @@
                 "./pages/**/*.ejs",
                 "./pages/index.ejs"
             ],
-            theme: { 
+            theme: {
                 screens: {
                     sm: '480px',
                     md: '768px',
@@ -35,7 +35,7 @@
                 },
                 extend: {
                     backgroundImage: theme => ({
-                        "image_2" : "url('../stock-images/image_2.png')"
+                        "image_2": "url('../stock-images/image_2.png')"
                     }),
                     spacing: {
                         '128': '32rem',
@@ -52,13 +52,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap" rel="stylesheet">
-    
+
 </head>
 <header>
     <%- include('../partials/header'); %>
 </header>
+
 <body class="bg-gray-light bg-opacity-0 ">
-    <div class="container mx-auto px-4 py-8 bg-cover" style="background-image: url("/stock-images/image_2.png"); height: 400px">
+    <div class="container mx-auto px-4 py-8 bg-cover" style="background-image: url(" /stock-images/image_2.png");
+        height: 400px">
         <section class="mt-8">
             <div class="flex flex-col items-center">
                 <form class="w-full max-w-sm" action="/" method="post">
@@ -87,7 +89,8 @@
                             class="w-full bg-blue text-blue py-2 px-4 rounded-md hover:bg-blue-dark focus:outline-none focus:ring-2 focus:ring-blue focus:ring-opacity-50">
                             Request information
                             <svg class="inline w-4 h-4 ml-2 rtl:rotate-180" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 5l7 7-7 7" />
                             </svg>
@@ -97,18 +100,23 @@
             </div>
         </section>
 
-        <section class="mt-8">
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h1 class="text-2xl font-bold text-gray-dark mb-4">
-                    <%= constructorTitle %>
-                </h1>
-                <h2 class="text-xl font-medium text-gray mb-4">
-                    <%= raceTitle %>
-                </h2>
-                <p class="text-gray">
-                    <%= textOutput %>
-                </p>
-            </div>
+    <section class="mt-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h1 class="text-2xl font-bold text-gray-dark mb-4">
+                <%= constructorTitle %>
+            </h1>
+            <h2 class="text-xl font-medium text-gray mb-4">
+                <%= eventDisplay %>
+            </h2>
+            <% for(const output of textOutput){ %>
+                <p class="text-gray text-justify ml-3 mr-5">
+                    <%= output %>
+                        <div class="relative flex py-5 items-center">
+                                <span class="flex-shrink mx-4 text-gray-400"></span>
+                        </div>
+                    </p>
+            <% } %>
+        </div>
         </section>
         <footer class="mt-8">
             <%- include('../partials/footer'); %>
