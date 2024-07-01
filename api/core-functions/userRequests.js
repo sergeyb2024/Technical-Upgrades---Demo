@@ -7,8 +7,7 @@ menu dropdown options
 const getUniqueMenuOptions = async (obj) => {
   const constructor = await _.uniqBy(obj, 'Constructor');
   const raceName = await _.uniqBy(obj, 'RaceName');
-  const eventDisplay = await _.uniqBy(obj, 'RequiredEventDisplay');
-  return [constructor, raceName, eventDisplay];
+  return [constructor, raceName];
 };
 
 /** descriptionOfChangesForEvent(Object, String, String)
@@ -52,7 +51,8 @@ const getCarComponentChanges = (data, components) => {
 
 // raceEvent (String) or raceNo (Number)
 // returns teams with updates at the given raceEvent
-const whoMadeChangesByRaceEvent = (data, raceEvent) => data.filter((item) => item.RaceName === RaceName).map((item) => item.Constructor);
+const whoMadeChangesByRaceEvent = (data, raceEvent) =>
+  data.filter((item) => item.RaceName === RaceName).map((item) => item.Constructor);
 
 // Experimental function with ability to search by change type keyword
 // *Can be used to compare reasons behind update
