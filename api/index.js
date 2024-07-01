@@ -1,37 +1,71 @@
 const express = require('express');
-const sessions = require('express-session');
-const path = require('path');
-const helmet = require('helmet');
-const cors = require('cors');
 
-const app = express();
-// require('dotenv').config();
+const router = express.Router();
+const { generateCsrfToken, verifyCsrfToken } = require('../middleware/validation');
+const { validateMenuSelections, handleMenuSelectionErrors } = require('../middleware/validation');
+const { getUniqueMenuOptions, descriptionOfChangesForEvent } = require('../core-functions/userRequests');
+const { getCountDown } = require('../core-functions/countdown-timer');
+const { getResponseFromAPI } = require('../core-functions/fetchData');
+const { transformData, getEventDisplayName } = require('../core-functions/backend-api');
 
-const { contentPolicyMiddleware } = require('./middleware/validation');
-const indexRoutes = require('./routes/index');
+/**
+ *   user selected options are captured from the post method
+ *   when any value is selected in the dropdown. Only the last selected will
+ *   be valid, hence the use of array.unshift method, placing variable at the
+ *   beginning of arrays.
+ */
 
-app.set('view engine', 'ejs');
-app.use(express.static(path.join(__dirname, '/')));
-app.set('views', path.join(__dirname, './views'));
-app.use(express.urlencoded({ extended: true }));
+const constructorOptionSelected = [];
+const raceOptionSelected = [];
 
-if (process.env.NODE_ENV !== 'production') { require('dotenv').config(); }
+/**
+ *  assembleData() plays a role of a general constructor which will
+ *  push the right data into ejs templates. It depends on options that
+ *  user selects in dropdown menus
+*/
 
-app.use(sessions({
-  secret: 'session-secret',
-  csrfToken: process.env.SECRET,
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: 'auto' },
-}));
+const assembleData = async (constructorOption, raceOption) => {
+  const userQueryObj = {
+    constructor: constructorOption[0],
+    race: raceOption[0],
+  };
+  const responseFromAPI = await getResponseFromAPI();
+  const dataObjTransformed = transformData(responseFromAPI);
+  const eventDisplayName = getEventDisplayName(dataObjTransformed, userQueryObj.race);
+  const descriptionOfChanges = await descriptionOfChangesForEvent(dataObjTransformed, userQueryObj.race, userQueryObj.constructor);
+  return [eventDisplayName, descriptionOfChanges];
+};
 
-app.use(helmet());
-app.use(cors({ origin: 'https://tech-upgrades-build.vercel.app' }));
-app.use(contentPolicyMiddleware);
+router.get('/', async (req, res) => {
+  try {
+    const csrfToken = generateCsrfToken(req);
+    const timeLeftUntilNextRace = getCountDown();
+    const responseFromAPI = await getResponseFromAPI();
+    const [constructor, raceName] = await getUniqueMenuOptions(responseFromAPI);
+    const [eventDisplay, descriptionReady] = await assembleData(constructorOptionSelected, raceOptionSelected);
 
-app.use('/', indexRoutes);
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+    res.render('pages/index', {
+      constructor,
+      raceName,
+      textOutput: descriptionReady.length === 0 ? '' : descriptionReady.map((item) => `${item}`),
+      timeLeftUntilNextRace,
+      constructorTitle: constructorOptionSelected[0] === 'Select Constructor' || typeof constructorOptionSelected[0] === 'undefined' ? '' : constructorOptionSelected[0],
+      raceTitle: raceOptionSelected[0] === 'Select Race' ? '' : raceOptionSelected[0],
+      eventDisplay,
+      csrfToken,
+    });
+  } catch (error) {
+    res.status(500).send('Internal Server Error!!');
+  }
 });
+
+/*
+server validates the token and if user made requires selection.
+*/
+router.post('/', verifyCsrfToken, validateMenuSelections, handleMenuSelectionErrors, (req, res) => {
+  constructorOptionSelected.unshift(req.body.constructor);
+  raceOptionSelected.unshift(req.body.race);
+  res.redirect('/');
+});
+
+module.exports = router;
